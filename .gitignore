@@ -1,0 +1,14 @@
+# Environment variables
+.env
+
+# Node modules
+node_modules/
+
+# User uploaded files
+/uploads/
+
+# IDEs and editors
+.vscode/
+
+# macOS
+.DS_Store
