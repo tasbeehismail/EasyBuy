@@ -31,7 +31,7 @@ export const updateSubCategory = async (req, res, next) => {
     subCategory.name = name || subCategory.name;
     subCategory.slug = slug || subCategory.slug;
     subCategory.image = image || subCategory.image;
-
+    subCategory.updatedBy = user_id;
     await subCategory.save();
 
     res.status(200).json({ message: 'Sub-Category updated successfully', data: subCategory });

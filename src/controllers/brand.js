@@ -32,6 +32,7 @@ export const updateBrand = async (req, res, next) => {
 
     brand.name = name || brand.name;
     brand.logo = logo || brand.logo;
+    brand.updatedBy = req.user._id;
     await brand.save();
     res.status(200).json({ message: 'Brand updated successfully', data: brand });
 }

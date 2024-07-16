@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, {Types} from 'mongoose';
 
 const categorySchema = new mongoose.Schema({
   name: {
@@ -20,7 +20,12 @@ const categorySchema = new mongoose.Schema({
     required: true,
   },
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Types.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+  updatedBy: {
+    type: Types.ObjectId,
     required: true,
     ref: 'User',
   },

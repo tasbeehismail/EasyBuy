@@ -1,4 +1,4 @@
-import {mongoose, Schema, Types} from 'mongoose';
+import {mongoose, Types} from 'mongoose';
 
 const subCategorySchema = new mongoose.Schema({
   name: {
@@ -20,6 +20,11 @@ const subCategorySchema = new mongoose.Schema({
     ref: 'Category',
   },
   createdBy: {
+    type: Types.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+  updatedBy: {
     type: Types.ObjectId,
     required: true,
     ref: 'User',

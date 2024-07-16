@@ -28,6 +28,7 @@ export const updateCategory = async (req, res, next) => {
     category.name = name || category.name;
     category.slug = slug || category.slug;
     category.image = image || category.image;
+    category.updatedBy = user_id;
     await category.save();
 
     res.status(200).json({ message: 'Category updated successfully', data: category });
