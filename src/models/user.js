@@ -1,22 +1,46 @@
 import { Schema, model } from "mongoose";
 
+const addressSchema = new mongoose.Schema({
+    street: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    zip: {
+      type: String,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+  });
+  
 const userSchema = new Schema({
     firstName: {
         type: String,
-        required: true
+        required: true,
+        minLength: 2,
+        maxLength: 50,
     },
     lastName: {
         type: String,
-        required: true
+        required: true,
+        minLength: 2,
+        maxLength: 50,
     },
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: [true, "Email already exists"],
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minLength: 8,
     },
     recoveryEmail: {
         type: String
@@ -29,6 +53,16 @@ const userSchema = new Schema({
         type: String,
         unique: true
     },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user',
+    },
+    isBlocked: {
+        type: Boolean,
+        default: false,
+    },
+    addresses: [addressSchema],
     confirmEmail: {
         type: Boolean,
         default: false
