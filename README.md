@@ -10,7 +10,6 @@
     - [Coupon Management](#coupon-management)
     - [Search and Filter](#search-and-filter)
     - [Reporting and Analytics](#reporting-and-analytics)
-  - [Non-Functional Requirements](#non-functional-requirements)
 - [Database Design](#database-design)
   - [Overview](#overview)
   - [Schema Diagram](#schema-diagram)
