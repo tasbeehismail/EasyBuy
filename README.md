@@ -1,41 +1,25 @@
 # EasyBuy
 
-## Table of Contents
-- [Project Overview](#project-overview)
-- [Requirements](#requirements)
-  - [User Management](#user-management)
-  - [Product Management](#product-management)
-  - [Order Management](#order-management)
-  - [Coupon Management](#coupon-management)
-  - [Search and Filter](#search-and-filter)
-  - [Reporting and Analytics](#reporting-and-analytics)
-- [Database Design](#database-design)
-  - [Overview](#overview)
-  - [Schema Diagram](#schema-diagram)
-  - [Collections](#collections)
-    - [User Model](#user-model)
-    - [Category Model](#category-model)
-    - [Sub-Category Model](#sub-category-model)
-    - [Brand Model](#brand-model)
-    - [Product Model](#product-model)
-    - [Review Model](#review-model)
-    - [Cart Model](#cart-model)
-    - [Coupon Model](#coupon-model)
-    - [Order Model](#order-model)
-- [API Documentation](#api-documentation)
-
-
----
-
 ## Project Overview
 
 The platform will facilitate seamless online shopping experiences for users and efficient product management for administrators.
 
 ---
 
+## Table of Contents
+- [Project Overview](#project-overview)
+- [Requirements](#requirements)
+- [Database Design](#database-design)
+  - [Overview](#overview)
+  - [Schema Diagram](#schema-diagram)
+  - [Collections](#collections)
+- [API Documentation](#api-documentation)
+
+---
+
 ## Requirements
 
-#### User Management
+### User Management
 
 - **Registration and Authentication**
   - Users can register with their first name, last name, email, password, and date of birth.
@@ -48,7 +32,7 @@ The platform will facilitate seamless online shopping experiences for users and 
   - Role-based access control (user and admin roles).
   - Ability to block users from making purchases if they cancel an order, requiring them to use a card for future purchases.
   
-#### Product Management
+### Product Management
 
 - **Product Operations**
   - Admins can perform CRUD operations on products.
@@ -58,25 +42,25 @@ The platform will facilitate seamless online shopping experiences for users and 
   - Categories and sub-categories for organizing products.
   - Brands can be created with a name and associated logo.
 
-#### Order Management
+### Order Management
 
 - **Cart and Order Operations**
   - Users can add, update, and remove items from their cart.
   - Order placement, tracking (pending, shipped, delivered, cancelled), and history.
 
-#### Coupon Management
+### Coupon Management
 
 - **Coupon Operations**
   - Admins can create coupons with codes, discounts, expiry dates, and usage limits.
   - Users can apply coupons to their orders for discounts.
 
-#### Search and Filter
+### Search and Filter
 
 - **Product Search**
   - Users can search for products by name, category, brand, etc.
   - Advanced filtering and sorting options based on price, discount, rating, etc.
 
-#### Reporting and Analytics
+### Reporting and Analytics
 
 - **Reporting**
   - Generate sales reports, user activity reports, and analyze product performance.
@@ -100,11 +84,12 @@ The database utilizes MongoDB with collections structured as follows:
 
 ### Schema Diagram
 
-![Database Schema Diagram](https://github.com/tasbeehismail/EasyBuy/blob/main/doc/schema-diagram.png)
+![Database Schema Diagram](https://github.com/tasbeehismail/EasyBuy/blob/main/docs/schema-diagram.png)
 
 ### Collections
 
 #### **User Model**
+
 | Field         | Type    | Constraints                        |
 | ------------- | ------- | ---------------------------------- |
 | firstName     | String  | required: true, minLength: 2, maxLength: 50 |
@@ -126,6 +111,7 @@ The database utilizes MongoDB with collections structured as follows:
 | updatedAt     | Date    | default: Date.now                  |
 
 #### **Category Model**
+
 | Field       | Type    | Constraints                        |
 | ----------- | ------- | ---------------------------------- |
 | name        | String  | required: true, unique: true, minLength: 2, maxLength: 50 |
@@ -135,6 +121,7 @@ The database utilizes MongoDB with collections structured as follows:
 | updatedAt   | Date    | default: Date.now                  |
 
 #### **Sub-Category Model**
+
 | Field       | Type    | Constraints                        |
 | ----------- | ------- | ---------------------------------- |
 | name        | String  | required: true, minLength: 2, maxLength: 50 |
@@ -144,6 +131,7 @@ The database utilizes MongoDB with collections structured as follows:
 | updatedAt   | Date    | default: Date.now                  |
 
 #### **Brand Model**
+
 | Field       | Type    | Constraints                        |
 | ----------- | ------- | ---------------------------------- |
 | name        | String  | required: true, unique: true, minLength: 2, maxLength: 50 |
@@ -152,6 +140,7 @@ The database utilizes MongoDB with collections structured as follows:
 | updatedAt   | Date    | default: Date.now                  |
 
 #### **Product Model**
+
 | Field       | Type    | Constraints                        |
 | ----------- | ------- | ---------------------------------- |
 | name        | String  | required: true, minLength: 2, maxLength: 100 |
@@ -172,6 +161,7 @@ The database utilizes MongoDB with collections structured as follows:
 | updatedAt   | Date    | default: Date.now                  |
 
 #### **Review Model**
+
 | Field       | Type    | Constraints                        |
 | ----------- | ------- | ---------------------------------- |
 | userId      | ObjectId| required: true, ref: 'User'        |
@@ -182,6 +172,7 @@ The database utilizes MongoDB with collections structured as follows:
 | updatedAt   | Date    | default: Date.now                  |
 
 #### **Cart Model**
+
 | Field       | Type    | Constraints                        |
 | ----------- | ------- | ---------------------------------- |
 | userId      | ObjectId| required: true, ref: 'User'        |
@@ -190,6 +181,7 @@ The database utilizes MongoDB with collections structured as follows:
 | updatedAt   | Date    | default: Date.now                  |
 
 #### **Coupon Model**
+
 | Field       | Type    | Constraints                        |
 | ----------- | ------- | ---------------------------------- |
 | code        | String  | required: true, unique: true       |
@@ -200,6 +192,7 @@ The database utilizes MongoDB with collections structured as follows:
 | updatedAt   | Date    | default: Date.now                  |
 
 #### **Order Model**
+
 | Field       | Type    | Constraints                        |
 | ----------- | ------- | ---------------------------------- |
 | userId      | ObjectId| required: true, ref: 'User'        |
@@ -213,6 +206,6 @@ The database utilizes MongoDB with collections structured as follows:
 
 ## API Documentation
 
-For detailed API documentation, please refer to our [Postman Documentation](https://documenter.getpostman.com/view/34627138/2sA3kPqkBh).
+For detailed API documentation, please refer to my [Postman Documentation](https://documenter.getpostman.com/view/34627138/2sA3kPqkBh).
 
 ---
