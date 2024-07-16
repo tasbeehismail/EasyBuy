@@ -33,4 +33,4 @@ const updateCategory = Joi.object({
   }),
 });
 
-export default {addCategory, updateCategory};
+export {addCategory, updateCategory};
