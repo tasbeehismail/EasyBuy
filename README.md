@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-The platform will facilitate seamless online shopping experiences for users and efficient product management for administrators.
+The platform is designed to facilitate seamless online shopping experiences for users while providing efficient product management for administrators.
 
 ---
 
