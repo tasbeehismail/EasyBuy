@@ -47,7 +47,6 @@ const userSchema = new Schema({
     },
     DOB:{
         type: Date,
-        required: true
     },
     mobileNumber: {
         type: String,

@@ -1,5 +1,24 @@
 import Joi from 'joi';
 
+const addressSchema = Joi.object({
+  street: Joi.string().required().messages({
+    'string.base': 'Street must be a string',
+    'string.empty': 'Street is required',
+  }),
+  city: Joi.string().required().messages({
+    'string.base': 'City must be a string',
+    'string.empty': 'City is required',
+  }),
+  zip: Joi.string().required().messages({
+    'string.base': 'ZIP code must be a string',
+    'string.empty': 'ZIP code is required',
+  }),
+  country: Joi.string().required().messages({
+    'string.base': 'Country must be a string',
+    'string.empty': 'Country is required',
+  }),
+});
+
 const signUp = Joi.object({
   firstName: Joi.string().min(3).max(50).trim().required().messages({
     'any.required': 'First name is required.',
@@ -28,13 +47,14 @@ const signUp = Joi.object({
     'string.max': 'Password cannot exceed {#limit} characters.',
     'string.pattern.base': 'Password must only contain letters and numbers and be between 3 to 30 characters long.',
   }),
-  DOB: Joi.date().iso().required().messages({
+  DOB: Joi.date().iso().messages({
     'any.required': 'Date of birth is required.',
     'date.base': 'Date of birth must be in YYYY-MM-DD format.',
   }),
-  mobileNumber: Joi.string().required().pattern(new RegExp('^[0-9]{10}$')).messages({
+  mobileNumber: Joi.string().pattern(new RegExp('^[0-9]{10}$')).messages({
     'string.pattern.base': 'Mobile number must be a valid 10-digit number.',
   }),
+  addresses: Joi.array().items(addressSchema),
 });
 
 const logIn = Joi.object({
