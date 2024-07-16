@@ -1,5 +1,4 @@
-// models/subCategory.js
-import mongoose from 'mongoose';
+import {mongoose, Schema, Types} from 'mongoose';
 
 const subCategorySchema = new mongoose.Schema({
   name: {
@@ -15,10 +14,15 @@ const subCategorySchema = new mongoose.Schema({
     lowercase: true,
     unique: true,
   },
-  parentCategory: {
-    type: mongoose.Schema.Types.ObjectId,
+  Category: {
+    type: Types.ObjectId,
     required: true,
     ref: 'Category',
+  },
+  createdBy: {
+    type: Types.ObjectId,
+    required: true,
+    ref: 'User',
   },
 });
 

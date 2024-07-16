@@ -1,4 +1,3 @@
-// models/product.js
 import {mongoose, Schema, Types} from 'mongoose';
 
 const productSchema = new mongoose.Schema({
@@ -73,6 +72,11 @@ const productSchema = new mongoose.Schema({
     type: Number,
     default: 0,
     min: 0,
+  },
+  createdBy: {
+    type: Types.ObjectId,
+    required: true,
+    ref: 'User',
   },
 });
 

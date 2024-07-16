@@ -1,4 +1,3 @@
-// models/brand.js
 import mongoose from 'mongoose';
 
 const brandSchema = new mongoose.Schema({
@@ -19,6 +18,11 @@ const brandSchema = new mongoose.Schema({
   logo: {
     type: String,
     required: true,
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
   },
 });
 
