@@ -24,7 +24,7 @@ const brandSchema = new mongoose.Schema({
     required: true,
     ref: 'User',
   },
-});
+}, {timestamps: true});
 
 const Brand = mongoose.model('Brand', brandSchema);
 export default Brand;
