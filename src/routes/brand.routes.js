@@ -4,12 +4,13 @@ import asyncHandler from '../utils/asyncHandler.js';
 import * as schema from "../validation/brand.js";
 import { validate } from "../services/validator.service.js";
 import { verifyToken } from "../services/auth.service.js";
-
+import { uploadSingleFile } from '../middleware/uploadFiles.js';
 const router = Router();
 
 router.post('/', 
     verifyToken(),
     validate(schema.addBrand),
+    uploadSingleFile('logo'),
     asyncHandler(brandController.addBrand)
 )
 
@@ -24,6 +25,7 @@ router.get('/:id',
 router.patch('/:id',
     verifyToken(),
     validate(schema.updateBrand),
+    uploadSingleFile('logo'),
     asyncHandler(brandController.updateBrand)
 )
 

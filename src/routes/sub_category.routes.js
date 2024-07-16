@@ -4,12 +4,14 @@ import asyncHandler from '../utils/asyncHandler.js';
 import * as schema from "../validation/sub_category.js";
 import { validate } from "../services/validator.service.js";
 import { verifyToken } from "../services/auth.service.js";
+import { uploadSingleFile } from '../middleware/uploadFiles.js';
 
 const router = Router();
 
 router.post('/', 
     verifyToken(),
     validate(schema.addSubCategory),
+    uploadSingleFile('image'),
     asyncHandler(subCategoryController.addSubCategory)
 )
 
@@ -24,6 +26,7 @@ router.get('/:id',
 router.patch('/:id',
     verifyToken(),
     validate(schema.updateSubCategory),
+    uploadSingleFile('image'),
     asyncHandler(subCategoryController.updateSubCategory)
 )
 

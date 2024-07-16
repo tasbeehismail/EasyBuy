@@ -34,7 +34,7 @@ const storage = multer.diskStorage({
 const fileFilter = (fieldName) => {
   return (req, file, cb) => {
     // Check if the mime type of the uploaded file starts with '???'
-    if (file.mimetype.startsWith('..')) {
+    if (file.mimetype.startsWith('image')) {
       cb(null, true);
     } else {
       // If the mime type is not valid, return an error
