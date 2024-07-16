@@ -1,13 +1,14 @@
 import AppError from '../utils/appError.js';
 import Category from '../models/category.js';
+import slugify from 'slugify'
 
 export const addCategory = async (req, res, next) => {
     const user_id = req.user._id;
-    const { name, slug, image } = req.body;
+    const { name, image } = req.body;
 
     const category = await Category.create({
         name,
-        slug,
+        slug: slugify(name),
         image,
         createdBy: user_id
     });
@@ -18,7 +19,10 @@ export const addCategory = async (req, res, next) => {
 
 export const updateCategory = async (req, res, next) => {
     const user_id = req.user._id;
-    const { name, slug, image } = req.body;
+    const { name, image } = req.body;
+    if(name){
+        req.body.slug = slugify(name);
+    }
     const category = await Category.findById({ _id: req.params.id });
 
     if (!category) {
@@ -26,7 +30,7 @@ export const updateCategory = async (req, res, next) => {
     }   
 
     category.name = name || category.name;
-    category.slug = slug || category.slug;
+    category.slug = req.body.slug || category.slug;
     category.image = image || category.image;
     category.updatedBy = user_id;
     await category.save();

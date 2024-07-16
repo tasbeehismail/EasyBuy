@@ -1,5 +1,6 @@
 import AppError from '../utils/appError.js';
 import SubCategory from '../models/subCategory.js';
+import slugify from 'slugify'
 
 export const getCategories = async (req, res, next) => {
     const subCategories = await SubCategory.find();
@@ -13,15 +14,18 @@ export const getSubCategory = async (req, res, next) => {
 
 export const addSubCategory = async (req, res, next) => {
     const user_id = req.user._id;
-    const { name, slug, image } = req.body;
+    const { name, image } = req.body;
 
-    const subCategory = await SubCategory.create({ name, slug, image, createdBy: user_id });
+    const subCategory = await SubCategory.create({ name, slug: slugify(name), image, createdBy: user_id });
     res.status(200).json({ message: 'Sub-Category added successfully', data: subCategory });
 }
 
 export const updateSubCategory = async (req, res, next) => {
     const user_id = req.user._id;
-    const { name, slug, image } = req.body;
+    const { name, image } = req.body;
+    if(name){
+        req.body.slug = slugify(name);
+    }
     const subCategory = await SubCategory.findById({ _id: req.params.id });
 
     if (!subCategory) {
@@ -29,7 +33,7 @@ export const updateSubCategory = async (req, res, next) => {
     }
 
     subCategory.name = name || subCategory.name;
-    subCategory.slug = slug || subCategory.slug;
+    subCategory.slug = req.body.slug || subCategory.slug;
     subCategory.image = image || subCategory.image;
     subCategory.updatedBy = user_id;
     await subCategory.save();
