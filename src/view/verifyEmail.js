@@ -5,7 +5,7 @@
  * @returns {string} Email verification template
  */
 const verifyEmailTemplate = (fullName, otp) => {
-    const verifyUrl = `${process.env.BASE_URL}/users/verify-email`;
+    const verifyUrl = `${process.env.BASE_URL}/v1/api/users/verify-email`;
     return `
         <!DOCTYPE html>
         <html lang="en">

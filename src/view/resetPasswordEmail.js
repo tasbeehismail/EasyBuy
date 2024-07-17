@@ -6,7 +6,7 @@
  */
 const resetPasswordEmailTemplate = (fullName, otp) => {
     // Construct the reset URL with the base URL from the environment variables.
-    const resetUrl = `${process.env.BASE_URL}/users/reset-password`;
+    const resetUrl = `${process.env.BASE_URL}/v1/api/users/reset-password`;
 
     // Return the HTML email template.
     return `
