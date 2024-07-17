@@ -26,10 +26,12 @@ export const addCategory = async (req, res, next) => {
 export const updateCategory = async (req, res, next) => {
     const user_id = req.user._id;
     const { name } = req.body;
+    // Check if file is uploaded
     let image;
     if(req.file){
-        image = req.file.image;
+        image = req.file.filename;
     }
+    
     if(name){
         req.body.slug = slugify(name);
     }

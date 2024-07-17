@@ -16,6 +16,7 @@ const updateCategory = Joi.object({
     'string.base': 'Name must be a string',
     'string.min': 'Name must be at least 2 characters',
     'string.max': 'Name must be at most 50 characters',
+    'string.pattern.base': 'Name must not contain multiple spaces',
   }),
   id: Joi.string().hex().length(24).messages({
     'string.base': 'ID must be a string',
