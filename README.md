@@ -7,7 +7,6 @@ The platform is designed to facilitate seamless online shopping experiences for 
 ---
 
 ## Table of Contents
-- [Project Overview](#project-overview)
 - [Requirements](#requirements)
 - [Database Design](#database-design)
   - [Overview](#overview)
