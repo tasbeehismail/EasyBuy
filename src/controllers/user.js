@@ -56,7 +56,7 @@ export const login = async (req, res, next) => {
         return next(new AppError('Email not verified. Please verify your email first.', 401));
     }
     // Generate a token
-    const payload = { id: user._id, email: user.email, tokenType: 'access' };
+    const payload = { id: user._id, email: user.email, role: user.role, tokenType: 'access' };
     const token = generateToken(payload);
     
     await user.save();
