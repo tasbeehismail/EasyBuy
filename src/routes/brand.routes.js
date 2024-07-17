@@ -5,10 +5,13 @@ import * as schema from "../validation/brand.js";
 import { validate } from "../services/validator.service.js";
 import { verifyToken } from "../services/auth.service.js";
 import { uploadSingleFile } from '../middleware/uploadFiles.js';
+import { authorizeRoles } from "../middleware/authorizeRoles.js";
+
 const router = Router();
 
 router.post('/', 
     verifyToken(),
+    authorizeRoles('admin'),
     validate(schema.addBrand),
     uploadSingleFile('logo'),
     asyncHandler(brandController.addBrand)
@@ -24,6 +27,7 @@ router.get('/:id',
 
 router.patch('/:id',
     verifyToken(),
+    authorizeRoles('admin'),
     validate(schema.updateBrand),
     uploadSingleFile('logo'),
     asyncHandler(brandController.updateBrand)
@@ -31,6 +35,7 @@ router.patch('/:id',
 
 router.delete('/:id', 
   verifyToken(),
+  authorizeRoles('admin'),
   asyncHandler(brandController.deleteBrand)
 );
 
