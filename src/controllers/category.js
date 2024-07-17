@@ -70,5 +70,8 @@ export const getCategories = async (req, res, next) => {
 export const getCategory = async (req, res, next) => {
     const category = await Category.findById({ _id: req.params.id })
     .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
+    if(!category){
+        return next(new AppError('Category not found', 404));
+    }
     res.status(200).json({ data: category });
 }

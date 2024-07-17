@@ -28,7 +28,10 @@ export const getSubCategoriesByCategory = async (req, res, next) => {
 
 export const getSubCategory = async (req, res, next) => {
     const subCategory = await SubCategory.findById({ _id: req.params.id })
-    .select('-__v -createdAt -updatedAt -createdBy -updatedBy');;
+    .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
+    if(!subCategory){
+        return next(new AppError('Sub-Category not found', 404));
+    }
     res.status(200).json({ data: subCategory });
 }
 
