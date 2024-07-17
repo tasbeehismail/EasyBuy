@@ -8,6 +8,7 @@ const categorySchema = new mongoose.Schema({
     trim: true,
     minLength: 2,
     maxLength: 50,
+    set: (value) => value.replace(/\s+/g, ' ').trim(),
   },
   slug: {
     type: String,
