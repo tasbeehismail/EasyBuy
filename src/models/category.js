@@ -1,11 +1,11 @@
 import mongoose, {Types} from 'mongoose';
+import AppError from '../utils/appError.js';
 
 const categorySchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
     trim: true,
-    unique: true,
     minLength: 2,
     maxLength: 50,
   },
@@ -30,6 +30,17 @@ const categorySchema = new mongoose.Schema({
     ref: 'User',
   },
 }, {timestamps: true});
+
+categorySchema.post('save', function(error, doc, next) {
+  if (error.name === 'MongoServerError' && error.code === 11000) {
+      next(new AppError('Category with this name already exists.', 409));
+  } else {
+      next(error);
+  }
+});
+categorySchema.post('init', function (category) {
+  category.image = `${process.env.BASE_URL}/uploads/${category.image}`
+});
 
 const Category = mongoose.model('Category', categorySchema);
 export default Category;

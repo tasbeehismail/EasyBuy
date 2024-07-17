@@ -5,13 +5,14 @@ import * as schema from "../validation/category.js";
 import { validate } from "../services/validator.service.js";
 import { verifyToken } from "../services/auth.service.js";
 import { uploadSingleFile } from '../middleware/uploadFiles.js';
-
+import { authorizeRoles } from "../middleware/authorizeRoles.js";
 const router = Router();
 
 router.post('/', 
     verifyToken(),
-    validate(schema.addCategory),
+    authorizeRoles('admin'),
     uploadSingleFile('image'),
+    validate(schema.addCategory),
     asyncHandler(categoryController.addCategory)
 )
 
@@ -25,6 +26,7 @@ router.get('/:id',
 
 router.patch('/:id',
     verifyToken(),
+    authorizeRoles('admin'),
     validate(schema.updateCategory),
     uploadSingleFile('image'),
     asyncHandler(categoryController.updateCategory)
@@ -32,6 +34,7 @@ router.patch('/:id',
 
 router.delete('/:id',
     verifyToken(),
+    authorizeRoles('admin'),
     asyncHandler(categoryController.deleteCategory)
 )
 

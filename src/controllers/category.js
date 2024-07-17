@@ -4,13 +4,19 @@ import slugify from 'slugify'
 
 export const addCategory = async (req, res, next) => {
     const user_id = req.user._id;
-    const { name, image } = req.body;
-
+    const { name } = req.body;
+    // Check if file is uploaded
+    if (!req.file) {
+        return next(new AppError('No file uploaded', 400));
+    }
+    const image = req.file.filename;
+    
     const category = await Category.create({
         name,
         slug: slugify(name),
         image,
-        createdBy: user_id
+        createdBy: user_id,
+        updatedBy: user_id
     });
 
     res.status(201).json({ message: 'Category created successfully', data: category });
@@ -19,7 +25,11 @@ export const addCategory = async (req, res, next) => {
 
 export const updateCategory = async (req, res, next) => {
     const user_id = req.user._id;
-    const { name, image } = req.body;
+    const { name } = req.body;
+    let image;
+    if(req.file){
+        image = req.file.image;
+    }
     if(name){
         req.body.slug = slugify(name);
     }
@@ -40,24 +50,25 @@ export const updateCategory = async (req, res, next) => {
 
 
 export const deleteCategory = async (req, res, next) => {
-    const user_id = req.user._id;
     const category = await Category.findById({ _id: req.params.id });
 
     if (!category) {
         return next(new AppError('Category not found', 404));
     }
 
-    await category.remove();
+    await Category.findByIdAndDelete(req.params.id);
 
     res.status(200).json({ message: 'Category deleted successfully' });
 }
 
 export const getCategories = async (req, res, next) => {
-    const categories = await Category.find();
+    const categories = await Category.find()
+    .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
     res.status(200).json({ data: categories });
 }
 
 export const getCategory = async (req, res, next) => {
-    const category = await Category.findById({ _id: req.params.id });
+    const category = await Category.findById({ _id: req.params.id })
+    .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
     res.status(200).json({ data: category });
 }
