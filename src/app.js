@@ -27,7 +27,7 @@ const bootstrap = async (app) => {
     await connectDB();
 
     // Set up routes.
-    app.use(routes);
+    app.use("/v1/api/", routes);
 
     // Handle errors after all routes have been checked.
     app.use(errorHandler);

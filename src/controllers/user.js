@@ -7,7 +7,7 @@ import resetPasswordEmailTemplate from '../view/resetPasswordEmail.js';
 import verifyEmailTemplate from '../view/verifyEmail.js';
 /**
  * @description Signup a new user
- * @route POST /user/signup
+ * @route POST /users/signup
  * @access Public
  * @param {object} req - Express request object containing user details
  * @param {object} res - Express response object
@@ -31,7 +31,7 @@ export const signup = async (req, res, next) => {
 }
 /**
  * @description Login a user
- * @route POST /user/login
+ * @route POST /users/login
  * @access Public
  * @param {object} req - Express request object containing login details
  * @param {object} res - Express response object
@@ -65,7 +65,7 @@ export const login = async (req, res, next) => {
 }
 /**
  * @description Verify user's email
- * @route POST /user/verify-email
+ * @route POST /users/verify-email
  * @access Public
  * @param {object} req - Express request object containing email and OTP
  * @param {object} res - Express response object
@@ -91,7 +91,7 @@ export const verifyEmail = async (req, res, next) => {
 };
 /**
  * @description Request password reset
- * @route POST /user/forgot-password
+ * @route POST /users/forgot-password
  * @access Public
  * @param {object} req - Express request object containing user's email
  * @param {object} res - Express response object
@@ -111,7 +111,7 @@ export const forgotPassword = async (req, res, next) => {
 }
 /**
  * @description Reset user's password
- * @route POST /user/reset-password
+ * @route POST /users/reset-password
  * @param {object} req - Express request object containing new password, OTP, and email
  * @param {object} res - Express response object
  * @param {function} next - Express next middleware function
@@ -139,7 +139,7 @@ export const resetPassword = async (req, res, next) => {
 }
 /**
  * @description Get current logged-in user's details
- * @route GET /user/me
+ * @route GET /users/me
  * @access Private
  * @param {object} req - Express request object containing user details
  * @param {object} res - Express response object
@@ -159,7 +159,7 @@ export const getMe = async (req, res, next) => {
 }
 /**
 + * @description Get other user's profile
-+ * @route GET /user/account/:id
++ * @route GET /users/account/:id
 + * @access Private
 + * @param {object} req - Express request object containing user ID
 + * @param {object} res - Express response object
@@ -175,40 +175,17 @@ export const getOtherUser = async (req, res, next) => {
     }
     res.status(200).json({ data: user });
 }
-/**
- * @description Get accounts by recovery email
- * @route GET /user/accounts
- * @access Private
- * @param {object} req - Express request object containing recovery email
- * @param {object} res - Express response object
- * @param {function} next - Express next middleware function
- */
-export const getAccountsByRecoveryEmail = async (req, res, next) => {
-    const { recoveryEmail } = req.body;
-    // Exclude password, otp, and confirmEmail from response
-    const users = await User.find({ recoveryEmail }).select('-password -otp -confirmEmail');
 
-    if (!users.length) {
-        return next(new AppError('No accounts found with the provided recovery email', 404));
-    }
-
-    res.status(200).json({
-        results: users.length,
-        data: {
-            users
-        }
-    });
-}
 /**
  * @description Update current user's account details
- * @route PATCH /user/account
+ * @route PATCH /users/account
  * @access Private
  * @param {object} req - Express request object containing updated user details
  * @param {object} res - Express response object
  * @param {function} next - Express next middleware function
  */
 export const updateAccount = async (req, res, next) => {
-    const { email, mobileNumber, recoveryEmail, firstName, lastName, DOB } = req.body;
+    const { email, mobileNumber, recoveryEmail, firstName, lastName, DOB, addresses } = req.body;
     const user = req.user;
     // Check if user exists
     if(!user){
@@ -221,6 +198,19 @@ export const updateAccount = async (req, res, next) => {
     user.firstName = firstName || user.firstName;
     user.lastName = lastName || user.lastName;
     user.DOB = DOB || user.DOB;
+    // Update addresses
+    if (addresses && Array.isArray(addresses)) {
+        // Filter out any addresses that already exist in user.addresses
+        const newAddresses = addresses.filter(newAddr => {
+            return !user.addresses.some(existingAddr =>
+                existingAddr.street === newAddr.street && // Compare by street as an example
+                existingAddr.city === newAddr.city // Add more fields as needed
+            );
+        });
+
+        // Append unique new addresses to user.addresses
+        user.addresses.push(...newAddresses);
+    }
     await user.save();
     // Remove sensitive data before sending response
     user.password = undefined;
@@ -230,7 +220,7 @@ export const updateAccount = async (req, res, next) => {
 }
 /**
  * @description Delete current user's account
- * @route DELETE /user/account
+ * @route DELETE /users/account
  * @access Private
  * @param {object} req - Express request object containing user details
  * @param {object} res - Express response object
@@ -250,7 +240,7 @@ export const deleteAccount = async (req, res, next) => {
 
 /**
  * @description Update the current user's password
- * @route PATCH /user/password
+ * @route PATCH /users/password
  * @access Private
  * @param {object} req - Express request object containing current and new passwords
  * @param {object} res - Express response object

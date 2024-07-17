@@ -15,9 +15,15 @@ export const existingUser = async (req, res, next) => {
     // Destructure the email and mobileNumber from the request body
     const { email, mobileNumber } = req.body;
 
+    if(!email && !mobileNumber){
+        return next();
+    }
+    const query = {};
+    if (email) query.email = email;
+    if (mobileNumber) query.mobileNumber = mobileNumber;
     // Find a user with the given email or mobileNumber
-    const user = await User.findOne({ $or: [{ email }, { mobileNumber }] });
-
+    const user = await User.findOne({ $or: query });
+    
     // If a user exists, throw an AppError
     if (user) {
         next(new AppError('User already exists with this email or mobile number', 409));

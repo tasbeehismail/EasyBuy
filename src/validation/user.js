@@ -107,6 +107,9 @@ const updateAccount = Joi.object({
   DOB: Joi.date().iso().messages({
     'date.base': 'Date of birth must be in YYYY-MM-DD format.',
   }),
+  addresses: Joi.array().items(addressSchema).messages({
+    'array.base': 'Addresses must be an array.',
+  }),
 });
 
 const getOtherUser = Joi.object({
@@ -145,14 +148,6 @@ const forgetPassword = Joi.object({
     'any.required': 'Email is required.',
     'string.empty': 'Email cannot be empty.',
     'string.email': 'Email must be a valid email address.',
-  }),
-});
-
-const getAccountsByRecoveryEmail = Joi.object({
-  recoveryEmail: Joi.string().email().trim().required().messages({
-    'any.required': 'Recovery email is required.',
-    'string.empty': 'Recovery email cannot be empty.',
-    'string.email': 'Recovery email must be a valid email address.',
   }),
 });
 
@@ -201,7 +196,6 @@ export {
   getOtherUser,
   updatePassword,
   forgetPassword,
-  getAccountsByRecoveryEmail,
   resetPassword,
   verifyEmail
 };

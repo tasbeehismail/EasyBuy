@@ -49,8 +49,7 @@ const userSchema = new Schema({
         type: Date,
     },
     mobileNumber: {
-        type: String,
-        unique: true
+        type: String
     },
     role: {
         type: String,

@@ -38,8 +38,10 @@ export const verifyToken =  (secret = process.env.JWT_SECRET, isBearer = false) 
       try {
           // Verify the token
           const decoded = jwt.verify(token, secret);
+          
           // Attach the user to the request
           req.user = await User.findById(decoded.id);
+          
           next();
       } catch (error) {
           throw next(new AppError('Invalid or expired token', 401));

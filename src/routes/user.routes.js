@@ -65,9 +65,6 @@ router.delete('/account',
   asyncHandler(userController.deleteAccount)
 );
 
-router.get('/accounts', 
-  validate(schema.getAccountsByRecoveryEmail),
-  asyncHandler(userController.getAccountsByRecoveryEmail)
-);
+
 
 export default router;
