@@ -12,8 +12,8 @@ const router = Router();
 router.post('/', 
     verifyToken(),
     authorizeRoles('admin'),
-    validate(schema.addBrand),
     uploadSingleFile('logo'),
+    validate(schema.addBrand),
     asyncHandler(brandController.addBrand)
 )
 

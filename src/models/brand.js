@@ -1,4 +1,5 @@
 import mongoose, {Types} from 'mongoose';
+import AppError from '../utils/appError.js';
 
 const brandSchema = new mongoose.Schema({
   name: {

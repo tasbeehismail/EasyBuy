@@ -5,7 +5,7 @@ import slugify from 'slugify'
 export const addBrand = async (req, res, next) => {
     const user_id = req.user._id;
     const { name } = req.body;
-    console.log(name);
+
     // Check if file is uploaded
     if (!req.file) {
         return next(new AppError('No file uploaded', 400));
