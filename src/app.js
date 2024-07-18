@@ -1,6 +1,6 @@
 // Handle uncaught exceptions in the process 
 process.on('uncaughtException', (err) => {
-    console.error(err);
+    //console.error(err);
 })
 import express from 'express'; 
 import dotenv from 'dotenv';
@@ -40,7 +40,7 @@ const bootstrap = async (app) => {
      * @param {Error} err - The error that was rejected.
      */
     process.on('unhandledRejection', (err) => {
-        console.error(err);
+        //console.error(err);
     });
 };
 
