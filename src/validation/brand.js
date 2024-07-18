@@ -8,6 +8,19 @@ const addBrand = Joi.object({
     'any.required': 'Name is required',
     'string.pattern.base': 'Name must not contain multiple spaces',
   }),
+  logo: Joi.object({
+    fieldname: Joi.string().valid('logo').required(),
+    originalname: Joi.string().required(),
+    encoding: Joi.string().required(),
+    mimetype: Joi.string().required(),
+    destination: Joi.string().required(),
+    path: Joi.string().required(),
+    size: Joi.number().max(2 * 1024 * 1024).required(), // Max size 2MB
+    filename: Joi.string().required(),
+  }).required().messages({
+    'any.required': 'Logo is required',
+    'object.base': 'Logo must be an object',
+  }),
 });
 
 const updateBrand = Joi.object({

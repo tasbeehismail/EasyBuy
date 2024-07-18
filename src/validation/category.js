@@ -8,6 +8,19 @@ const addCategory = Joi.object({
     'any.required': 'Name is required',
     'string.pattern.base': 'Name must not contain multiple spaces',
   }),
+  image: Joi.object({
+    fieldname: Joi.string().valid('image').required(),
+    originalname: Joi.string().required(),
+    encoding: Joi.string().required(),
+    mimetype: Joi.string().required(),
+    destination: Joi.string().required(),
+    path: Joi.string().required(),
+    size: Joi.number().max(2 * 1024 * 1024).required(), // Max size 2MB
+    filename: Joi.string().required(),
+  }).required().messages({
+    'any.required': 'Image is required',
+    'object.base': 'Image must be an object',
+  }),
 });
 
 const updateCategory = Joi.object({

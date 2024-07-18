@@ -7,6 +7,16 @@ import AppError from "../utils/appError.js";
 export const validate = (schema) => (req, res, next) => {
     // Combine all data from the request body, query, and params into one object.
     const allData = { ...req.body, ...req.query, ...req.params };
+    
+    // Include single file (req.file) and multiple files (req.files) into the allData object
+    if (req.file) {
+        allData[req.file.fieldname] = req.file;
+    }
+    if (req.files) {
+        Object.keys(req.files).forEach((key) => {
+            allData[key] = req.files[key];
+        });
+    }
     // Validate the data.
     const { error } = schema.validate(allData, { abortEarly: false });
     if (error) {
