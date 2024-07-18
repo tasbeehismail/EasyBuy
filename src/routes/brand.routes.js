@@ -6,6 +6,7 @@ import { validate } from "../services/validator.service.js";
 import { verifyToken } from "../services/auth.service.js";
 import { uploadSingleFile } from '../middleware/uploadFiles.js';
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
+import { isValidId } from "../validation/idValidation.js";
 
 const router = Router();
 
@@ -22,7 +23,7 @@ router.get('/',
 )
 
 router.get('/:id',
-    validate(schema.idBrand),
+    isValidId(),
     asyncHandler(brandController.getBrand)
 )
 
@@ -37,7 +38,7 @@ router.patch('/:id',
 router.delete('/:id', 
     verifyToken(),
     authorizeRoles('admin'),
-    validate(schema.idBrand),
+    isValidId(),
     asyncHandler(brandController.deleteBrand)
 );
 

@@ -112,15 +112,6 @@ const updateAccount = Joi.object({
   }),
 });
 
-const getOtherUser = Joi.object({
-  id: Joi.string().required().hex().length(24).messages({
-    'any.required': 'User ID is required.',
-    'string.empty': 'User ID cannot be empty.',
-    'string.hex': 'User ID must be a hexadecimal string.',
-    'string.length': 'User ID must be 24 characters long.',
-  }),
-});
-
 const updatePassword = Joi.object({
   currentPassword: Joi.string().min(6).max(128).pattern(/^[a-zA-Z0-9]{3,30}$/).required().messages({
     'any.required': 'Current password is required.',
@@ -193,7 +184,6 @@ export {
   signUp,
   logIn,
   updateAccount,
-  getOtherUser,
   updatePassword,
   forgetPassword,
   resetPassword,

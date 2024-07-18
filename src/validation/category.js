@@ -25,12 +25,4 @@ const updateCategory = Joi.object({
   }),
 });
 
-const idCategory = Joi.object({
-  id: Joi.string().hex().length(24).messages({
-    'string.base': 'ID must be a string',
-    'string.hex': 'ID must be a hexadecimal string',
-    'string.length': 'ID must be 24 characters long',
-  }),
-});
-
-export {addCategory, updateCategory, idCategory};
+export {addCategory, updateCategory};

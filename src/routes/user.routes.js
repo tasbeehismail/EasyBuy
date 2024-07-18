@@ -5,6 +5,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 import * as schema from "../validation/user.js";
 import { validate } from "../services/validator.service.js";
 import { verifyToken } from "../services/auth.service.js";
+import { isValidId } from "../validation/idValidation.js";
 
 const router = Router();
 
@@ -43,7 +44,7 @@ router.get('/me',
 );
 
 router.get('/account/:id', 
-  validate(schema.getOtherUser),
+  isValidId(),
   asyncHandler(userController.getOtherUser)
 );
 

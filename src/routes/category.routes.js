@@ -7,6 +7,8 @@ import { verifyToken } from "../services/auth.service.js";
 import { uploadSingleFile } from '../middleware/uploadFiles.js';
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import subCategoryRoutes from "./sub_category.routes.js";
+import { isValidId } from "../validation/idValidation.js";
+
 const router = Router();
 
 // Nested sub-category routes
@@ -25,7 +27,7 @@ router.get('/',
 )
 
 router.get('/:id',
-    validate(schema.idCategory),
+    isValidId(),
     asyncHandler(categoryController.getCategory)
 )
 
@@ -40,7 +42,7 @@ router.patch('/:id',
 router.delete('/:id',
     verifyToken(),
     authorizeRoles('admin'),
-    validate(schema.idCategory),
+    isValidId(),
     asyncHandler(categoryController.deleteCategory)
 )
 
