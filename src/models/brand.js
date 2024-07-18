@@ -39,8 +39,9 @@ brandSchema.post('save', function(error, doc, next) {
       next(error);
   }
 });
+
 brandSchema.post('init', function (brand) {
-  brand.logo = `${process.env.BASE_URL}/uploads/${brand.logo}`
+  brand.logo = `${process.env.BASE_URL}/uploads/brands/${brand.logo}`
 });
 
 const Brand = mongoose.model('Brand', brandSchema);

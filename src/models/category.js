@@ -40,7 +40,7 @@ categorySchema.post('save', function(error, doc, next) {
   }
 });
 categorySchema.post('init', function (category) {
-  category.image = `${process.env.BASE_URL}/uploads/${category.image}`
+  category.image = `${process.env.BASE_URL}/uploads/categories/${category.image}`
 });
 
 const Category = mongoose.model('Category', categorySchema);
