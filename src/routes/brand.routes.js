@@ -28,15 +28,15 @@ router.get('/:id',
 router.patch('/:id',
     verifyToken(),
     authorizeRoles('admin'),
-    validate(schema.updateBrand),
     uploadSingleFile('logo'),
+    validate(schema.updateBrand),
     asyncHandler(brandController.updateBrand)
 )
 
 router.delete('/:id', 
-  verifyToken(),
-  authorizeRoles('admin'),
-  asyncHandler(brandController.deleteBrand)
+    verifyToken(),
+    authorizeRoles('admin'),
+    asyncHandler(brandController.deleteBrand)
 );
 
 export default router;

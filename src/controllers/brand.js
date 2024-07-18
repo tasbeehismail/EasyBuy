@@ -50,6 +50,7 @@ export const updateBrand = async (req, res, next) => {
     if(req.file){
         logo = req.file.filename;
     }
+    
     if(name){
         req.body.slug = slugify(name);
     } 
@@ -76,7 +77,7 @@ export const deleteBrand = async (req, res, next) => {
         return next(new AppError('Brand not found', 404));
     }
 
-    await brand.findByIdAndDelete({_id: id});
+    await Brand.findByIdAndDelete({_id: id});
     
     res.status(200).json({ message: 'Brand deleted successfully' });
 }
