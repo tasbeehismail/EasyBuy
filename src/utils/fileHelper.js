@@ -9,9 +9,10 @@ import path from 'path';
  */
 export const deleteFileIfExists = (moduleName, fileName) => {
     if (!fileName) return;
-
-    const relativePath = fileName.replace(`${process.env.BASE_URL}/uploads/`, '');
-    const filePath = path.join('uploads', relativePath);
+    if(fileName.startsWith('http')){
+        fileName = fileName.replace(`${process.env.BASE_URL}/uploads/${moduleName}/`, '');
+    }
+    const filePath = path.join('uploads/', moduleName, fileName);
 
     //console.log(`Deleting file: ${filePath}`);
 

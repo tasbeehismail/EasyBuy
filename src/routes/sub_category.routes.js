@@ -4,9 +4,10 @@ import asyncHandler from '../utils/asyncHandler.js';
 import * as schema from "../validation/sub_category.js";
 import { validate } from "../services/validator.service.js";
 import { verifyToken } from "../services/auth.service.js";
-import { uploadSingleFile } from '../middleware/uploadFiles.js';
+import { uploadSingleFile } from '../services/upload.service.js';
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import { isValidId } from "../validation/idValidation.js";
+import { existingDocument } from "../middleware/existingDocument.js";
 
 const router = Router({ mergeParams: true }); // Merge parent route params
 
@@ -14,7 +15,7 @@ router.post('/',
     verifyToken(),
     authorizeRoles('admin'),
     validate(schema.addSubCategory),
-    uploadSingleFile('image'),
+    asyncHandler(existingDocument('SubCategory', ['name'])),
     asyncHandler(subCategoryController.addSubCategory)
 )
 
@@ -31,7 +32,7 @@ router.patch('/:id',
     verifyToken(),
     authorizeRoles('admin'),
     validate(schema.updateSubCategory),
-    uploadSingleFile('image'),
+    asyncHandler(existingDocument('SubCategory', ['name'])),
     asyncHandler(subCategoryController.updateSubCategory)
 )
 

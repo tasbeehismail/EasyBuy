@@ -4,17 +4,19 @@ import asyncHandler from '../utils/asyncHandler.js';
 import * as schema from "../validation/brand.js";
 import { validate } from "../services/validator.service.js";
 import { verifyToken } from "../services/auth.service.js";
-import { uploadSingleFile } from '../middleware/uploadFiles.js';
+import { uploadSingleFile } from '../services/upload.service.js';
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import { isValidId } from "../validation/idValidation.js";
+import { existingDocument } from "../middleware/existingDocument.js";
 
 const router = Router();
 
 router.post('/', 
     verifyToken(),
     authorizeRoles('admin'),
-    uploadSingleFile('logo'),
+    asyncHandler(uploadSingleFile('logo')),
     validate(schema.addBrand),
+    asyncHandler(existingDocument('Brand', ['name'])),
     asyncHandler(brandController.addBrand)
 )
 
@@ -30,8 +32,9 @@ router.get('/:id',
 router.patch('/:id',
     verifyToken(),
     authorizeRoles('admin'),
-    uploadSingleFile('logo'),
+    asyncHandler(uploadSingleFile('logo')),
     validate(schema.updateBrand),
+    asyncHandler(existingDocument('Brand', ['name'])),
     asyncHandler(brandController.updateBrand)
 )
 

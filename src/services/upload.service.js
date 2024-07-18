@@ -18,5 +18,8 @@ import { storage, fileFilter } from '../config/fileStorage.js';
    return isMultiple ? multerInstance.array(fieldName, 10) : multerInstance.single(fieldName);
 };
 
+const uploadSingleFile = (fieldName) => upload(fieldName, false);
 
-export { upload };
+const uploadManyFiles = (fieldName) => upload(fieldName, true);
+
+export { uploadSingleFile, uploadManyFiles };
