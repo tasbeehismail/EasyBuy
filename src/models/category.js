@@ -32,13 +32,6 @@ const categorySchema = new mongoose.Schema({
   },
 }, {timestamps: true});
 
-categorySchema.post('save', function(error, doc, next) {
-  if (error.name === 'MongoServerError' && error.code === 11000) {
-      next(new AppError('Category with this name already exists.', 409));
-  } else {
-      next(error);
-  }
-});
 categorySchema.post('init', function (category) {
   category.image = `${process.env.BASE_URL}/uploads/categories/${category.image}`
 });

@@ -32,13 +32,6 @@ const subCategorySchema = new mongoose.Schema({
   },
 }, {timestamps: true});
 
-subCategorySchema.post('save', function(error, doc, next) {
-  if (error.name === 'MongoServerError' && error.code === 11000) {
-      next(new AppError('Sub-Category with this name already exists.', 409));
-  } else {
-      next(error);
-  }
-});
-
 const SubCategory = mongoose.model('SubCategory', subCategorySchema);
+
 export default SubCategory;

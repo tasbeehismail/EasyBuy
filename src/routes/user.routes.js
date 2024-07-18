@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as userController from '../controllers/user.js';
-import { existingUser } from "../middleware/existingUser.js";
+import { existingDocument } from "../middleware/existingDocument.js";
 import asyncHandler from '../utils/asyncHandler.js';
 import * as schema from "../validation/user.js";
 import { validate } from "../services/validator.service.js";
@@ -12,7 +12,7 @@ const router = Router();
 // Auth routes
 router.post('/signup', 
   validate(schema.signUp), 
-  asyncHandler(existingUser), 
+  asyncHandler(existingDocument('User', ['email', 'mobileNumber'])), 
   asyncHandler(userController.signup)
 );
 
@@ -51,7 +51,7 @@ router.get('/account/:id',
 router.patch('/account', 
   verifyToken(),
   validate(schema.updateAccount),
-  asyncHandler(existingUser),
+  asyncHandler(existingDocument('User', ['email', 'mobileNumber'])), 
   asyncHandler(userController.updateAccount)
 );
 

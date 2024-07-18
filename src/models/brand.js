@@ -32,14 +32,6 @@ const brandSchema = new mongoose.Schema({
   },
 }, {timestamps: true});
 
-brandSchema.post('save', function(error, doc, next) {
-  if (error.name === 'MongoServerError' && error.code === 11000) {
-      next(new AppError('Brand with this name already exists.', 409));
-  } else {
-      next(error);
-  }
-});
-
 brandSchema.post('init', function (brand) {
   brand.logo = `${process.env.BASE_URL}/uploads/brands/${brand.logo}`
 });
