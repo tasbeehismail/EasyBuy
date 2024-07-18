@@ -8,6 +8,7 @@ import connectDB from './config/db.js';
 import errorHandler from './middleware/errorHandler.js';
 import routes from './routes/index.routes.js'; 
 
+
 dotenv.config();
 
 /**
@@ -21,6 +22,7 @@ const bootstrap = async (app) => {
     app.use(express.json());
     
     // Serve static files from the uploads directory.
+    
     app.use('/uploads', express.static('uploads'));
 
     // Connect to the database.

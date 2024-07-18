@@ -1,7 +1,22 @@
 import multer from 'multer';
 import { v4 as uuid } from 'uuid';
 import AppError from '../utils/appError.js';
+import fs from 'fs';
+import path from 'path';
 
+/**
+ * Ensure directory exists or create it.
+ *
+ * @param {string} dirPath - The directory path.
+ */
+const ensureDirectoryExistence = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+};
+/**
+ * Multer storage configuration with dynamic folder creation.
+ */
 const storage = multer.diskStorage({
 // Set the destination path where the files will be stored
   // Parameters:
@@ -9,7 +24,10 @@ const storage = multer.diskStorage({
   // - file: the file being uploaded
   // - cb: the callback function
   destination: (req, file, cb) => {
-    cb(null, './uploads');
+    const module = req.baseUrl.split('/').pop();
+    const dirPath = path.join('uploads', module);
+    ensureDirectoryExistence(dirPath);
+    cb(null, dirPath);
   },
   /**
    * Set the filename for the uploaded file.
@@ -38,7 +56,7 @@ const fileFilter = (fieldName) => {
       cb(null, true);
     } else {
       // If the mime type is not valid, return an error
-      cb(new AppError(`Not an ${fieldName}! Please upload only ${fieldName}.`, 400), false);
+      cb(new AppError(`Not a valid ${fieldName}! Please upload only ${fieldName}.`, 400), false);
     }
   };
 };
