@@ -22,6 +22,7 @@ router.get('/',
 )
 
 router.get('/:id',
+    validate(schema.idBrand),
     asyncHandler(brandController.getBrand)
 )
 
@@ -36,6 +37,7 @@ router.patch('/:id',
 router.delete('/:id', 
     verifyToken(),
     authorizeRoles('admin'),
+    validate(schema.idBrand),
     asyncHandler(brandController.deleteBrand)
 );
 
