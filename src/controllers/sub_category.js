@@ -4,25 +4,10 @@ import slugify from 'slugify'
 import Category from '../models/category.js';
 
 export const getSubCategories = async (req, res, next) => {
-    const subCategories = await SubCategory.find()
+    const { categoryId } = req.params;
+    const subCategories = await SubCategory.find({ Category: categoryId }) 
     .select('-__v -createdAt -updatedAt -createdBy -updatedBy');;
     res.status(200).json({ data: subCategories });
-}
-
-export const getSubCategoriesByCategory = async (req, res, next) => {
-    const subCategories = await SubCategory.find({ Category: req.params.id })
-    .select('-__v -createdAt -updatedAt -createdBy -updatedBy')
-    .populate({ path: 'Category', select: 'name' });
-
-    // Manually remove the image and id fields from the populated Category
-    const filteredSubCategories = subCategories.map(subCategory => {
-        if (subCategory.Category) {
-            subCategory.Category.image = undefined;
-        }
-        return subCategory;
-    });
-
-    res.status(200).json({ data: filteredSubCategories });
 }
 
 

@@ -7,7 +7,7 @@ import { verifyToken } from "../services/auth.service.js";
 import { uploadSingleFile } from '../middleware/uploadFiles.js';
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 
-const router = Router();
+const router = Router({ mergeParams: true }); // Merge parent route params
 
 router.post('/', 
     verifyToken(),
@@ -21,11 +21,8 @@ router.get('/',
     asyncHandler(subCategoryController.getSubCategories)
 )
 
-router.get('/category/:id',
-    asyncHandler(subCategoryController.getSubCategoriesByCategory)
-)
-
 router.get('/:id',
+    validate(schema.idSubCategory),
     asyncHandler(subCategoryController.getSubCategory)
 )
 
@@ -40,6 +37,7 @@ router.patch('/:id',
 router.delete('/:id',
     verifyToken(),
     authorizeRoles('admin'),
+    validate(schema.idSubCategory),
     asyncHandler(subCategoryController.deleteSubCategory)
 )
 
