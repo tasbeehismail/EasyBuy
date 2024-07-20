@@ -12,10 +12,17 @@ export default (err, req, res, next) => {
     if (err.data) {
         response.data = err.data; 
     }
+    const moduleName = req.originalUrl.split('api/')[1].split('/')[0];
     if(req.file){
-        const moduleName = req.originalUrl.split('api/')[1].split('/')[0];
         deleteFileIfExists(moduleName, req.file.filename);
     }
-    
+    if (req.files && req.files.images) {
+        req.files.images.forEach(file => {
+            deleteFileIfExists(moduleName, file.filename);
+        });
+    }
+    if(req.files.coverImage){
+        deleteFileIfExists(moduleName, req.files.coverImage[0].filename);
+    }
     res.status(code).json(response);
 };
