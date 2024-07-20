@@ -67,19 +67,19 @@ export const updateProduct = async (req, res, next) => {
     }
 
     // Handle cover image
-    if (req.file) {
+    if (req.files?.coverImage) {
         // Delete old cover image if it exists
         deleteFileIfExists('products', product.coverImage);
-        product.coverImage = req.file.filename;
+        product.coverImage = req.files.coverImage[0].filename;
     }
 
     // Handle additional images
-    if (req.files && req.files.length > 0) {
+    if (req.files?.images) {
         // Delete old images
         product.images.forEach(image => deleteFileIfExists('products', image));
 
         // Update the images array with new filenames
-        product.images = req.files.map(file => file.filename);
+        product.images = req.files.images.map(file => file.filename);
     }
 
     // Update product details

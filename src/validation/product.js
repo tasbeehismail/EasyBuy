@@ -68,6 +68,11 @@ const addProduct = Joi.object({
 });
 
 const updateProduct = Joi.object({
+    id: Joi.string().hex().length(24).messages({
+        'string.base': 'ID must be a string',
+        'string.hex': 'ID must be a hexadecimal string',
+        'string.length': 'ID must be 24 characters long',
+    }),
     title: Joi.string().min(2).max(50).messages({
         'string.base': 'Title must be a string',
         'string.min': 'Title must be at least 2 characters',
