@@ -16,12 +16,12 @@ export default (err, req, res, next) => {
     if(req.file){
         deleteFileIfExists(moduleName, req.file.filename);
     }
-    if (req.files && req.files.images) {
+    if (req.files?.images) {
         req.files.images.forEach(file => {
             deleteFileIfExists(moduleName, file.filename);
         });
     }
-    if(req.files.coverImage){
+    if(req.files?.coverImage){
         deleteFileIfExists(moduleName, req.files.coverImage[0].filename);
     }
     res.status(code).json(response);
