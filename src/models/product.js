@@ -85,5 +85,9 @@ const productSchema = new mongoose.Schema({
   },
 });
 
+productSchema.post('init', function (product) {
+  product.coverImage = `${process.env.BASE_URL}/uploads/products/${product.coverImage}`
+  product.images = product.images.map(image => `${process.env.BASE_URL}/uploads/products/${image}`);
+});
 const Product = mongoose.model('Product', productSchema);
 export default Product;
