@@ -4,7 +4,6 @@ const productSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
     minLength: 2,
     maxLength: 100,
@@ -13,7 +12,6 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
     lowercase: true,
-    unique: true,
   },
   description: {
     type: String,
