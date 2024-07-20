@@ -1,25 +1,36 @@
 import multer from 'multer';
 import { storage, fileFilter } from '../config/fileStorage.js';
 
-// This function handles file upload using multer
-// Parameters: 
-// - fieldName: the name of the field for the file input
-// - isMultiple: flag to determine if multiple files can be uploaded
-
- const upload = (fieldName, isMultiple = false) => { 
-  // Create a multer instance with specified configurations
-   const multerInstance = multer({
-    storage, // Storage configuration for saving files
+/**
+ * Handle mixed file uploads.
+ *
+ * @param {Array} fieldsConfig - The configuration for the fields.
+ * @return {Function} The middleware function that will handle file uploads.
+ */
+const uploadMixOfFiles = (fieldsConfig) => {
+  return multer({
+    storage,
     limits: { fileSize: 2 * 1024 * 1024 }, // Limit file size to 2MB
-    fileFilter: fileFilter(fieldName) // Filter files based on file type
-   });
- 
- // Return either single file upload or multiple file uploads based on isMultiple flag
-   return isMultiple ? multerInstance.array(fieldName, 10) : multerInstance.single(fieldName);
+    fileFilter: (req, file, cb) => {
+      if (fieldsConfig.find(field => field.name === file.fieldname)) {
+        fileFilter(file.fieldname)(req, file, cb);
+      } else {
+        cb(new AppError(`Unexpected field ${file.fieldname}`, 400), false);
+      }
+    }
+  }).fields(fieldsConfig);
 };
 
-const uploadSingleFile = (fieldName) => upload(fieldName, false);
+const uploadSingleFile = (fieldName) => multer({
+  storage,
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter: fileFilter(fieldName)
+}).single(fieldName);
 
-const uploadManyFiles = (fieldName) => upload(fieldName, true);
+const uploadManyFiles = (fieldName) => multer({
+  storage,
+  limits: { fileSize: 2 * 1024 * 1024 },
+  fileFilter: fileFilter(fieldName)
+}).array(fieldName, 10);
 
-export { uploadSingleFile, uploadManyFiles };
+export { uploadSingleFile, uploadManyFiles, uploadMixOfFiles };
