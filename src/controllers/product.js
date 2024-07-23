@@ -2,6 +2,7 @@ import AppError from '../utils/appError.js';
 import Product from '../models/product.js';
 import slugify from 'slugify'
 import { deleteFileIfExists } from '../utils/fileHelper.js';
+import APIFeatures from '../utils/APIFeatures.js';
 
 export const addProduct = async (req, res, next) => {
     const user_id = req.user._id;
@@ -39,48 +40,23 @@ export const addProduct = async (req, res, next) => {
 };
 
 export const getProducts = async (req, res, next) => {
-    // Pagination
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const searchFields = ['title', 'description']; // Specify the fields to search through
+    const features = new APIFeatures(Product.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .search(searchFields)
+        .paginate();
 
-    // Filtering
-    const queryObj = { ...req.query };
-    const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
-    excludedFields.forEach(el => delete queryObj[el]);
-
-    let queryStr = JSON.stringify(queryObj); // convert query object to string
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`); // add $ before gte, gt, lte, lt
-
-    let mongooseQuery = Product.find(JSON.parse(queryStr))
-        .skip((page - 1) * limit)
-        .limit(limit);
-
-    // Sorting
-    if (req.query.sort) {
-        const sortBy = req.query.sort.split(',').join(' ');
-        mongooseQuery = mongooseQuery.sort(sortBy);
-    }
-
-    // Selected fields
-    if (req.query.fields) {
-        const fields = req.query.fields.split(',').join(' ');
-        mongooseQuery = mongooseQuery.select(fields);
-    }
-
-    // Search
-    if (req.query.search) {
-        const searchRegex = new RegExp(req.query.search, 'i'); // 'i' for case insensitive
-        const searchConditions = [{ title: searchRegex }, { description: searchRegex }];
-        mongooseQuery = mongooseQuery.find({ $or: searchConditions });
-    }
-    let productsList = await mongooseQuery;
+    const productsList = await features.query;
 
     if (!productsList || productsList.length === 0) {
         return next(new AppError('Products not found', 404));
     }
 
     const totalProducts = await Product.countDocuments();
-    const totalPages = Math.ceil(totalProducts / limit);
+    const totalPages = Math.ceil(totalProducts / (parseInt(req.query.limit) || 10));
+    const page = parseInt(req.query.page) || 1;
     const hasNextPage = page < totalPages;
     const hasPreviousPage = page > 1;
     const nextPage = hasNextPage ? page + 1 : null;
@@ -90,7 +66,7 @@ export const getProducts = async (req, res, next) => {
         totalProducts,
         metaData: {
             page,
-            limit,
+            limit: parseInt(req.query.limit) || 10,
             totalPages,
             hasNextPage,
             hasPreviousPage,
