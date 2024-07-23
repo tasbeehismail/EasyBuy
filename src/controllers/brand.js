@@ -2,6 +2,8 @@ import AppError from '../utils/appError.js';
 import Brand from '../models/brand.js';
 import slugify from 'slugify'
 import { deleteFileIfExists } from '../utils/fileHelper.js';
+import APIFeatures from '../utils/APIFeatures.js';
+
 export const addBrand = async (req, res, next) => {
     const user_id = req.user._id;
     const { name } = req.body;
@@ -24,10 +26,44 @@ export const addBrand = async (req, res, next) => {
 }
 
 export const getBrands = async (req, res, next) => {
-    const brands = await Brand.find()
-    .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
+    const searchFields = ['name']; 
+    const features = new APIFeatures(Brand.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .search(searchFields)
+        .paginate();
 
-    res.status(200).json({ message: 'Brands retrieved successfully', data: brands });
+    const brandsList = await features.query;
+
+    if (!brandsList || brandsList.length === 0) {
+        return next(new AppError('Brands not found', 404));
+    }
+
+    const totalBrands = await Brand.countDocuments();
+    const totalPages = Math.ceil(totalBrands / (parseInt(req.query.limit) || 10));
+    const page = parseInt(req.query.page) || 1;
+    const hasNextPage = page < totalPages;
+    const hasPreviousPage = page > 1;
+    const nextPage = hasNextPage ? page + 1 : null;
+    const previousPage = hasPreviousPage ? page - 1 : null;
+    const numOfBrands = brandsList.length;
+    const result = {
+        totalBrands,
+        metaData: {
+            page,
+            limit: parseInt(req.query.limit) || 10,
+            totalPages,
+            hasNextPage,
+            hasPreviousPage,
+            nextPage,
+            previousPage
+        },
+        numOfBrands,
+        Brands: brandsList
+    };
+
+    res.status(200).json({ message: 'Brands retrieved successfully', data: result });
 }
 
 export const getBrand = async (req, res, next) => {
