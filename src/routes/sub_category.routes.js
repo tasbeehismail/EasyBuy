@@ -20,6 +20,7 @@ router.post('/',
 )
 
 router.get('/', 
+    isValidId(),
     asyncHandler(subCategoryController.getSubCategories)
 )
 
