@@ -7,8 +7,10 @@ import APIFeatures from '../utils/APIFeatures.js';
 export const getSubCategories = async (req, res, next) => {
     const { categoryId } = req.params;
     const searchFields = ['name']; 
-    
-    const features = new APIFeatures(SubCategory.find({ Category: categoryId }), req.query)
+    // if categoryId is not provided, return all subCategories
+    const filter = categoryId ? { Category: categoryId } : {};
+
+    const features = new APIFeatures(SubCategory.find(filter), req.query)
         .filter()
         .sort()
         .limitFields()
@@ -21,7 +23,7 @@ export const getSubCategories = async (req, res, next) => {
         return next(new AppError('SubCategories not found', 404));
     }
 
-    const totalSubCategories = await SubCategory.countDocuments({ Category: categoryId });
+    const totalSubCategories = await SubCategory.countDocuments(filter);
     const totalPages = Math.ceil(totalSubCategories / (parseInt(req.query.limit) || 10));
     const page = parseInt(req.query.page) || 1;
     const hasNextPage = page < totalPages;
