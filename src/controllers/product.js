@@ -50,12 +50,21 @@ export const getProducts = async (req, res, next) => {
     let queryStr = JSON.stringify(queryObj); // convert query object to string
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`); // add $ before gte, gt, lte, lt
 
-    const products = await Product.find(JSON.parse(queryStr)) 
+    const mongooseQuery = Product.find(JSON.parse(queryStr)) 
     .skip((page - 1) * limit)
     .limit(limit)
     .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
 
-    if(!products){
+    // Sorting
+    if(req.query.sort){
+        const sortBy = req.query.sort.split(',').join(' ');
+        mongooseQuery.sort(sortBy);
+    }
+
+    let productsList = await mongooseQuery.exec();
+
+
+    if(!productsList){
         return next(new AppError('Products not found', 404));
     }
     const totalProducts = await Product.countDocuments();
@@ -64,7 +73,7 @@ export const getProducts = async (req, res, next) => {
     const hasPreviousPage = page > 1;
     const nextPage = hasNextPage ? page + 1 : null;
     const previousPage = hasPreviousPage ? page - 1 : null;
-    const numOfProducts = products.length;
+    const numOfProducts = productsList.length;
     const result = {
         totalProducts,
         metaData: {
@@ -77,7 +86,7 @@ export const getProducts = async (req, res, next) => {
             previousPage
         },
         numOfProducts,
-        products: products
+        products: productsList
     };
     res.status(200).json({ message: 'Products fetched successfully', data: result });
 }
