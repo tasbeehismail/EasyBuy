@@ -2,12 +2,48 @@ import AppError from '../utils/appError.js';
 import SubCategory from '../models/subCategory.js';
 import slugify from 'slugify'
 import Category from '../models/category.js';
+import APIFeatures from '../utils/APIFeatures.js';
 
 export const getSubCategories = async (req, res, next) => {
     const { categoryId } = req.params;
-    const subCategories = await SubCategory.find({ Category: categoryId }) 
-    .select('-__v -createdAt -updatedAt -createdBy -updatedBy');;
-    res.status(200).json({ data: subCategories });
+    const searchFields = ['name']; 
+    
+    const features = new APIFeatures(SubCategory.find({ Category: categoryId }), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .search(searchFields)
+        .paginate();
+
+    const subCategoriesList = await features.query;
+
+    if (!subCategoriesList || subCategoriesList.length === 0) {
+        return next(new AppError('SubCategories not found', 404));
+    }
+
+    const totalSubCategories = await SubCategory.countDocuments({ Category: categoryId });
+    const totalPages = Math.ceil(totalSubCategories / (parseInt(req.query.limit) || 10));
+    const page = parseInt(req.query.page) || 1;
+    const hasNextPage = page < totalPages;
+    const hasPreviousPage = page > 1;
+    const nextPage = hasNextPage ? page + 1 : null;
+    const previousPage = hasPreviousPage ? page - 1 : null;
+    const numOfSubCategories = subCategoriesList.length;
+    const result = {
+        totalSubCategories,
+        metaData: {
+            page,
+            limit: parseInt(req.query.limit) || 10,
+            totalPages,
+            hasNextPage,
+            hasPreviousPage,
+            nextPage,
+            previousPage
+        },
+        numOfSubCategories,
+        subCategories: subCategoriesList
+    };
+    res.status(200).json({ message: 'SubCategories fetched successfully', data: result });
 }
 
 
