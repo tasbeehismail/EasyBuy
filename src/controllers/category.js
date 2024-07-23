@@ -2,6 +2,7 @@ import AppError from '../utils/appError.js';
 import Category from '../models/category.js';
 import slugify from 'slugify'
 import { deleteFileIfExists } from '../utils/fileHelper.js';
+import APIFeatures from '../utils/APIFeatures.js';
 
 export const addCategory = async (req, res, next) => {
     const user_id = req.user._id;
@@ -72,9 +73,43 @@ export const deleteCategory = async (req, res, next) => {
 }
 
 export const getCategories = async (req, res, next) => {
-    const categories = await Category.find()
-    .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
-    res.status(200).json({ data: categories });
+    const searchFields = ['name']; 
+    const features = new APIFeatures(Category.find(), req.query)
+        .filter()
+        .sort()
+        .limitFields()
+        .search(searchFields)
+        .paginate();
+
+    const categoriesList = await features.query;
+
+    if (!categoriesList || categoriesList.length === 0) {
+        return next(new AppError('Categories not found', 404));
+    }
+
+    const totalCategories = await Category.countDocuments();
+    const totalPages = Math.ceil(totalCategories / (parseInt(req.query.limit) || 10));
+    const page = parseInt(req.query.page) || 1;
+    const hasNextPage = page < totalPages;
+    const hasPreviousPage = page > 1;
+    const nextPage = hasNextPage ? page + 1 : null;
+    const previousPage = hasPreviousPage ? page - 1 : null;
+    const numOfCategories = categoriesList.length;
+    const result = {
+        totalCategories,
+        metaData: {
+            page,
+            limit: parseInt(req.query.limit) || 10,
+            totalPages,
+            hasNextPage,
+            hasPreviousPage,
+            nextPage,
+            previousPage
+        },
+        numOfCategories,
+        categories: categoriesList
+    };
+    res.status(200).json({ message: 'Categories fetched successfully', data: result });
 }
 
 export const getCategory = async (req, res, next) => {
