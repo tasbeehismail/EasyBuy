@@ -39,12 +39,40 @@ export const addProduct = async (req, res, next) => {
 };
 
 export const getProducts = async (req, res, next) => {
-    const products = await Product.find()
+    // Pagination
+    const page = parseInt(req.query.page) || 1; 
+    const limit = parseInt(req.query.limit) || 10;
+
+    const products = await Product.find() 
+    .skip((page - 1) * limit)
+    .limit(limit)
     .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
+
     if(!products){
         return next(new AppError('Products not found', 404));
     }
-    res.status(200).json({ message: 'Products fetched successfully', data: products });
+    const totalProducts = await Product.countDocuments();
+    const totalPages = Math.ceil(totalProducts / limit);
+    const hasNextPage = page < totalPages;
+    const hasPreviousPage = page > 1;
+    const nextPage = hasNextPage ? page + 1 : null;
+    const previousPage = hasPreviousPage ? page - 1 : null;
+    const numOfProducts = products.length;
+    const result = {
+        totalProducts,
+        metaData: {
+            page,
+            limit,
+            totalPages,
+            hasNextPage,
+            hasPreviousPage,
+            nextPage,
+            previousPage
+        },
+        numOfProducts,
+        products: products
+    };
+    res.status(200).json({ message: 'Products fetched successfully', data: result });
 }
 
 export const getProduct = async (req, res, next) => {   
