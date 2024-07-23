@@ -33,7 +33,7 @@ const categorySchema = new mongoose.Schema({
 }, {timestamps: true});
 
 categorySchema.post('init', function (category) {
-  category.image = `${process.env.BASE_URL}/uploads/categories/${category.image}`
+  if(category.image) category.image = `${process.env.BASE_URL}/uploads/categories/${category.image}`
 });
 
 const Category = mongoose.model('Category', categorySchema);

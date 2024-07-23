@@ -33,7 +33,7 @@ const brandSchema = new mongoose.Schema({
 }, {timestamps: true});
 
 brandSchema.post('init', function (brand) {
-  brand.logo = `${process.env.BASE_URL}/uploads/brands/${brand.logo}`
+  if(brand.logo) brand.logo = `${process.env.BASE_URL}/uploads/brands/${brand.logo}`
 });
 
 const Brand = mongoose.model('Brand', brandSchema);
