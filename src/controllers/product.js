@@ -40,33 +40,45 @@ export const addProduct = async (req, res, next) => {
 
 export const getProducts = async (req, res, next) => {
     // Pagination
-    const page = parseInt(req.query.page) || 1; 
+    const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
 
     // Filtering
     const queryObj = { ...req.query };
     const excludedFields = ['page', 'sort', 'limit', 'fields', 'search'];
     excludedFields.forEach(el => delete queryObj[el]);
+
     let queryStr = JSON.stringify(queryObj); // convert query object to string
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`); // add $ before gte, gt, lte, lt
 
-    const mongooseQuery = Product.find(JSON.parse(queryStr)) 
-    .skip((page - 1) * limit)
-    .limit(limit)
-    .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
+    let mongooseQuery = Product.find(JSON.parse(queryStr))
+        .skip((page - 1) * limit)
+        .limit(limit);
 
     // Sorting
-    if(req.query.sort){
+    if (req.query.sort) {
         const sortBy = req.query.sort.split(',').join(' ');
-        mongooseQuery.sort(sortBy);
+        mongooseQuery = mongooseQuery.sort(sortBy);
     }
 
-    let productsList = await mongooseQuery.exec();
+    // Selected fields
+    if (req.query.fields) {
+        const fields = req.query.fields.split(',').join(' ');
+        mongooseQuery = mongooseQuery.select(fields);
+    }
 
+    // Search
+    if (req.query.search) {
+        const searchRegex = new RegExp(req.query.search, 'i'); // 'i' for case insensitive
+        const searchConditions = [{ title: searchRegex }, { description: searchRegex }];
+        mongooseQuery = mongooseQuery.find({ $or: searchConditions });
+    }
+    let productsList = await mongooseQuery;
 
-    if(!productsList){
+    if (!productsList || productsList.length === 0) {
         return next(new AppError('Products not found', 404));
     }
+
     const totalProducts = await Product.countDocuments();
     const totalPages = Math.ceil(totalProducts / limit);
     const hasNextPage = page < totalPages;
