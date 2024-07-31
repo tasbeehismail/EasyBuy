@@ -5,9 +5,11 @@ import categoryRouter from './category.routes.js'
 import subCategoryRouter from './sub_category.routes.js'
 import brandRouter from './brand.routes.js'
 import productRouter from './product.routes.js'
+import authRouter from './auth.routes.js';
 
 const app = Router();
 
+app.use('/auth', authRouter);
 app.use('/users', userRouter);
 app.use('/categories', categoryRouter);
 app.use('/sub-categories', subCategoryRouter);

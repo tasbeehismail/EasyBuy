@@ -9,35 +9,6 @@ import { isValidId } from "../validation/idValidation.js";
 
 const router = Router();
 
-// Auth routes
-router.post('/signup', 
-  validate(schema.signUp), 
-  asyncHandler(existingDocument('User', ['email', 'mobileNumber'])), 
-  asyncHandler(userController.signup)
-);
-
-router.post('/login', 
-  validate(schema.logIn), 
-  asyncHandler(userController.login)
-);
-
-router.post('/verify-email', 
-  validate(schema.verifyEmail),
-  asyncHandler(userController.verifyEmail)
-);
-
-router.post('/forgot-password', 
-  validate(schema.forgetPassword),
-  asyncHandler(userController.forgotPassword)
-);
-
-router.post('/reset-password', 
-  validate(schema.resetPassword), 
-  asyncHandler(userController.resetPassword)
-);
-
-// User routes
-
 router.get('/me',  
   verifyToken(),
   asyncHandler(userController.getMe)
@@ -65,7 +36,5 @@ router.delete('/account',
   verifyToken(),
   asyncHandler(userController.deleteAccount)
 );
-
-
 
 export default router;
