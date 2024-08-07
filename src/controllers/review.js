@@ -1,6 +1,7 @@
 import AppError from '../utils/appError.js';
 import Review from '../models/review.js';
 import APIFeatures from '../utils/APIFeatures.js';
+import Product from '../models/product.js';
 
 export const getReviews = async (req, res, next) => {
     const searchFields = ['user']; 
@@ -59,11 +60,16 @@ export const getReview = async (req, res, next) => {
 export const addReview = async (req, res, next) => {
     const user_id = req.user._id;
     const { comment, rating } = req.body;
-    const { productId } = req.params;
+    const { product } = req.params;
+
+    const productObj = await Product.findById({ _id: product });
+    if (!productObj) {
+        return next(new AppError('Product not found', 404));
+    }
 
     const review = await Review.create({ 
         comment,
-        product: productId,
+        product,
         rating,
         user: user_id,
         createdBy: user_id,
