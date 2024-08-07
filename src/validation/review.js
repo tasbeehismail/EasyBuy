@@ -11,7 +11,7 @@ const addReview = Joi.object({
         'string.base': 'Comment must be a string',
         'string.max': 'Comment must be at most 500 characters',
     }),
-    productId: Joi.string().hex().length(24).required().messages({
+    product: Joi.string().hex().length(24).required().messages({
         'string.base': 'Product ID must be a string',
         'string.hex': 'Product ID must be a hexadecimal string',
         'string.length': 'Product ID must be 24 characters long',

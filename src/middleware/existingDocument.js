@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
 import AppError from '../utils/appError.js';
-
+import { isValidId } from '../validation/idValidation.js';
+import {mongoose, Types} from 'mongoose';
 /**
  * Middleware to check if a document with the given fields already exists in the specified module's collection.
  * If a document exists, an AppError is thrown with a 409 status code.
@@ -22,9 +22,21 @@ export const existingDocument = (moduleName, fields, filter = 'or') => {
       if (req.body[field]) {
         query[field] = req.body[field];
       }
+      if (req.query[field]) {
+        query[field] = req.query[field];
+      }
+      if (req.params[field]) {
+        if(isValidId()){
+          query[field] = new Types.ObjectId(req.params[field]);
+        }else {
+          query[field] = req.params[field];
+        }
+      }
+      if(req.user){
+        query.user = req.user._id;
+      }
     });
     
-
     // If no fields are provided, proceed to the next middleware
     if (Object.keys(query).length === 0) {
       return next();

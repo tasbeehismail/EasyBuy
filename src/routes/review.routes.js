@@ -10,11 +10,11 @@ import { existingDocument } from "../middleware/existingDocument.js";
 
 const router = Router({ mergeParams: true }); 
 
-router.post('/:productId', 
+router.post('/:product', 
     verifyToken(),
     authorizeRoles('user'),
     validate(schema.addReview),
-    asyncHandler(existingDocument('Review', ['user', 'product'], 'and')),
+    asyncHandler(existingDocument('Review', ['user', 'product'], 'and')), // _id for user_id
     asyncHandler(reviewController.addReview)
 )
 
