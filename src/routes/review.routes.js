@@ -7,6 +7,7 @@ import { verifyToken } from "../services/auth.service.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import { isValidId } from "../validation/idValidation.js";
 import { existingDocument } from "../middleware/existingDocument.js";
+import { authorizeOwner } from "../middleware/authorizeOwner.js";
 
 const router = Router({ mergeParams: true }); 
 
@@ -32,6 +33,7 @@ router.patch('/:id',
     verifyToken(),
     authorizeRoles('user'),
     validate(schema.updateReview),
+    asyncHandler(authorizeOwner('Review', 'user')),
     asyncHandler(reviewController.updateReview)
 )
 
@@ -39,6 +41,7 @@ router.delete('/:id',
     verifyToken(),
     authorizeRoles('user', 'admin'),
     isValidId(),
+    asyncHandler(authorizeOwner('Review', 'user', true)), // true for admin is allowed
     asyncHandler(reviewController.deleteReview)
 )
 
