@@ -6,6 +6,7 @@ import { validate } from "../services/validator.service.js";
 import { verifyToken } from "../services/auth.service.js";
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import { isValidId } from "../validation/idValidation.js";
+import { existingDocument } from "../middleware/existingDocument.js";
 
 const router = Router({ mergeParams: true }); 
 
@@ -13,6 +14,7 @@ router.post('/:productId',
     verifyToken(),
     authorizeRoles('user'),
     validate(schema.addReview),
+    asyncHandler(existingDocument('Review', ['user', 'product'], 'and')),
     asyncHandler(reviewController.addReview)
 )
 
