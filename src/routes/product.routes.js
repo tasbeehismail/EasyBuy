@@ -8,8 +8,10 @@ import { uploadMixOfFiles } from '../services/upload.service.js';
 import { authorizeRoles } from "../middleware/authorizeRoles.js";
 import { isValidId } from "../validation/idValidation.js";
 import { existingDocument } from "../middleware/existingDocument.js";
+import reviewRoutes from "./review.routes.js";
 
 const router = Router();
+router.use('/:productId/reviews', reviewRoutes);
 
 // Define the fields for multer to handle
 const uploadFieldsConfig = [
