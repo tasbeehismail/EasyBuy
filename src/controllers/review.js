@@ -18,6 +18,15 @@ export const getReviews = async (req, res, next) => {
 
     const reviewsList = await features.query;
 
+    const reviewsObj = reviewsList.map(review => {
+        const reviewObj = review.toObject();
+        if (reviewObj.user) {
+            const { firstName, lastName } = reviewObj.user;
+            reviewObj.user = `${firstName} ${lastName}`
+        }
+        return reviewObj;
+    });
+
     if (!reviewsList || reviewsList.length === 0) {
         return next(new AppError('Reviews not found', 404));
     }
@@ -42,19 +51,23 @@ export const getReviews = async (req, res, next) => {
             previousPage
         },
         numOfReviews,
-        reviews: reviewsList
+        reviews: reviewsObj
     };
     res.status(200).json({ message: 'Reviews fetched successfully', data: result });
 }
 
 
 export const getReview = async (req, res, next) => {
-    const review = await Review.findById({ _id: req.params.id })
+    const review = await Review.findById(req.params.id)
     .select('-__v -createdAt -updatedAt -createdBy -updatedBy');
     if(!review){
         return next(new AppError('Review not found', 404));
     }
-    res.status(200).json({ data: review });
+    const reviewObj = review.toObject();
+    const user = `${reviewObj.user.firstName} ${reviewObj.user.lastName}`
+    reviewObj.user = user;
+    
+    res.status(200).json({ data: reviewObj });
 }
 
 export const addReview = async (req, res, next) => {

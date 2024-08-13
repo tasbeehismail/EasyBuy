@@ -22,5 +22,28 @@ const reviewSchema = new mongoose.Schema({
   },
 }, {timestamps: true});
 
+reviewSchema.pre(/^find/, function (next) {
+  this.populate('user', 'firstName lastName');
+  next();
+});
+
+reviewSchema.post(/^find/, function(docs) {
+  if (Array.isArray(docs)) {
+      docs.forEach(doc => {
+          if (doc.user) {
+            const docObj = doc.toObject();
+            const { firstName, lastName } = docObj.user;
+              doc.user = `${firstName} ${lastName}`
+          }
+      });
+  } else {
+      if (docs.user) {
+        const docObj = docs.toObject();
+        const { firstName, lastName } = docObj.user;
+        docs.user = `${firstName} ${lastName}`
+      }
+  }
+});
+
 const Review = mongoose.model('Review', reviewSchema);
 export default Review;
