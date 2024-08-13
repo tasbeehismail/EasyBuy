@@ -72,6 +72,10 @@ const userSchema = new Schema({
         expiresAt: {
             type: Date,
         },
+    },
+    wishlist: {
+        type: [Schema.Types.ObjectId],
+        ref: 'Product'
     }
 }, { timestamps: true });
 
