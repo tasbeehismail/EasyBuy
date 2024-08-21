@@ -32,7 +32,7 @@ export const existingDocument = (moduleName, fields, filter = 'or') => {
           query[field] = req.params[field];
         }
       }
-      if(req.user){
+      if(field == 'user' && req.user){
         query.user = req.user._id;
       }
     });
