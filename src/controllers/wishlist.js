@@ -53,20 +53,26 @@ export const removeFromWishlist = async (req, res, next) => {
 
 export const getWishlist = async (req, res, next) => {
     const userId = req.user.id;
-    const user = await User.findById(userId).populate({
-        path: 'wishlist',
-        select: '-__v -updatedAt -createdBy -updatedBy'
-    }).exec();
+
+    const user = await User.findById(userId)
+        .populate({
+            path: 'wishlist.product',
+            select: '-__v -updatedAt -createdBy -updatedBy'
+        })
+        .exec();
 
     if (!user) {
         return next(new AppError('User not found', 404));
     }
-    //console.log(user);
-    let products=[];
-    for(let i = 0; i < user.wishlist.length; i++){
-        products.push(user.wishlist[i].product);
-    }
-    console.log(products);
-    const wishlist = await Product.find({ _id: {$in: products} }).skipPopulateReviews().exec();
+
+    // Extract the products from the wishlist
+    const products = user.wishlist.map(item => item.product);
+
+    // Fetch the products without populating reviews
+    const wishlist = await Product.find({ _id: { $in: products } })
+        .skipPopulateReviews()
+        .exec();
+
     res.status(200).json({ data: wishlist });
-}
+};
+

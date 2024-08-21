@@ -84,25 +84,38 @@ const productSchema = new mongoose.Schema({
 });
 
 productSchema.post('init', function (product) {
-  if(product.coverImage) product.coverImage = `${process.env.BASE_URL}/uploads/products/${product.coverImage}`
-  if(product.images) product.images = product.images.map(image => `${process.env.BASE_URL}/uploads/products/${image}`);
+  if (product.coverImage) {
+    product.coverImage = `${process.env.BASE_URL}/uploads/products/${product.coverImage}`;
+  }
+  if (product.images) {
+    product.images = product.images.map(image => `${process.env.BASE_URL}/uploads/products/${image}`);
+  }
 });
 
 productSchema.virtual('reviews', {
   ref: 'Review',
   localField: '_id',
   foreignField: 'product',
-})
+});
+
+// Custom query helper to skip populating reviews
+productSchema.query.skipPopulateReviews = function () {
+  this._skipPopulateReviews = true;
+  return this;
+};
 
 productSchema.pre(/^find/, function (next) {
-  this.populate({
-    path: 'reviews',
-    select: 'comment rating',
-  });
+  if (!this._skipPopulateReviews) {
+    this.populate({
+      path: 'reviews',
+      select: 'comment rating',
+    });
+  }
   next();
-})
+});
 
 productSchema.set('toJSON', { virtuals: true });
 
 const Product = mongoose.model('Product', productSchema);
+
 export default Product;

@@ -9,7 +9,7 @@ import AppError from '../utils/appError.js';
  */
 export const isValidId = () => {
     return (req, res, next) => {
-        const id = req.params.id || req.params.categoryId || req.params.product;
+        const id = req.params.id || req.params.categoryId || req.body.product;
         if(!id) return next();
         // Check if ID is a string and has a length of 24 characters
         if (typeof id !== 'string' || id.length !== 24) {
