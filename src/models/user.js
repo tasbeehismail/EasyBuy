@@ -1,4 +1,4 @@
-import { mongoose, Schema, model } from "mongoose";
+import { mongoose, Schema, model, Types } from "mongoose";
 
 const addressSchema = new mongoose.Schema({
     street: {
@@ -17,8 +17,19 @@ const addressSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-  });
-  
+ });
+
+const wishlistItemSchema = new Schema({
+    product: {
+        type: Types.ObjectId,
+        ref: 'Product',
+        required: true
+    },
+    addedDate: {
+        type: Date,
+        default: Date.now 
+    }
+});
 const userSchema = new Schema({
     firstName: {
         type: String,
@@ -73,10 +84,7 @@ const userSchema = new Schema({
             type: Date,
         },
     },
-    wishlist: {
-        type: [Schema.Types.ObjectId],
-        ref: 'Product'
-    }
+    wishlist: [wishlistItemSchema]
 }, { timestamps: true });
 
 userSchema.virtual('username').get(function () {
