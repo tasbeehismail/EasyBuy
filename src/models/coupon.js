@@ -33,6 +33,7 @@ const couponSchema = new mongoose.Schema({
 // Middleware to delete expired coupons before a query
 couponSchema.pre(/^find/, async function (next) {
   await Coupon.deleteMany({ expiryDate: { $lt: new Date() } });
+  await Coupon.deleteMany({ usedCount: { $gte: this.maxUsageCount } });
   next();
 });
 
