@@ -19,11 +19,11 @@ const addCoupon = Joi.object({
 });
 
 const updateCoupon = Joi.object({
-    id: Joi.string().hex().max(24).required().messages({
+    id: Joi.string().hex().length(24).required().messages({
         'string.base': 'ID must be a string',
         'string.empty': 'ID is required',
         'string.hex': 'ID must be a hexadecimal string',
-        'string.max': 'ID must be 24 characters long',
+        'string.length': 'ID must be 24 characters long',
     }),
     code: Joi.string().messages({
         'string.base': 'Code must be a string',
