@@ -10,6 +10,7 @@ import reviewRouter from './review.routes.js'
 import wishlistRouter from './wishlist.routes.js'
 import addressRouter from './address.routes.js'
 import couponRouter from './coupon.routes.js'
+import cartRouter from './cart.routes.js'
 
 const app = Router();
 
@@ -23,6 +24,7 @@ app.use('/reviews', reviewRouter);
 app.use('/wishlists', wishlistRouter);
 app.use('/addresses', addressRouter);
 app.use('/coupons', couponRouter);
+app.use('/carts', cartRouter);
 
 app.use('*', (req, res, next) => {
     next (new AppError ('invalid routing path ' + req.originalUrl, 404)); 

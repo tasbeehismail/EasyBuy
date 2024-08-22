@@ -19,13 +19,14 @@ const cartSchema = new mongoose.Schema({
     required: true,
     ref: 'User',
   },
-  products: [cartProductSchema],    
-  total: {
+  items: [cartProductSchema],    
+  total: { // total price without discount
     type: Number,
     required: true,
     min: 0,
   }
 }, {timestamps: true});
+
 
 const Cart = mongoose.model('Cart', cartSchema);
 export default Cart;
