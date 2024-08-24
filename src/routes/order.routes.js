@@ -8,6 +8,13 @@ import { authorizeRoles } from "../middleware/authorizeRoles.js";
 
 const router = Router();
 
+// create checkout session
+router.post('/session/:cartId',
+    verifyToken(),
+    authorizeRoles('user'),
+    asyncHandler(orderController.createCheckoutSession)
+)
+
 // create cash order
 router.post('/cash/:cartId', 
     verifyToken(),
@@ -36,4 +43,5 @@ router.get('/:id',
     authorizeRoles('user'),
     asyncHandler(orderController.getOrder)
 )
+
 export default router;
