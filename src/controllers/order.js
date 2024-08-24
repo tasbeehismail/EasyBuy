@@ -52,3 +52,34 @@ export const createCashOrder = async (req, res, next) => { // checkout
     res.status(201).json({ message: 'Order created successfully', order });
 }
 
+export const getOrders = async (req, res, next) => {
+    const user = req.user._id;
+    const orders = await Order.find({ user })
+    .populate('user', 'firstName lastName email')
+    .populate('products.product', 'coverImage name price');
+
+    if(orders.length === 0){
+        return next(new AppError('Orders not found', 404));
+    }
+    res.status(200).json({ message: 'Orders retrieved successfully', orders });
+}
+
+export const getAllOrders = async (req, res, next) => {
+    const orders = await Order.find({}).populate('user', 'firstName lastName email');
+    if(orders.length === 0){
+        return next(new AppError('Orders not found', 404));
+    }
+    res.status(200).json({ message: 'Orders retrieved successfully', orders });
+}
+
+export const getOrder = async (req, res, next) => {
+    const { id } = req.params;
+    const order = await Order.findById(id)
+    .populate('user', 'firstName lastName email')
+    .populate('products.product', 'coverImage name price');
+
+    if (!order) {
+        return next(new AppError('Order not found', 404));
+    }
+    res.status(200).json({ message: 'Order retrieved successfully', order });
+}

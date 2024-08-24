@@ -16,5 +16,24 @@ router.post('/cash/:cartId',
     asyncHandler(orderController.createCashOrder)
 )
 
+// get user orders
+router.get('/', 
+    verifyToken(),
+    authorizeRoles('user'),
+    asyncHandler(orderController.getOrders)
+)
 
+// get all orders
+router.get('/all', 
+    verifyToken(),
+    authorizeRoles('admin'),
+    asyncHandler(orderController.getAllOrders)
+)
+
+// get order
+router.get('/:id', 
+    verifyToken(),
+    authorizeRoles('user'),
+    asyncHandler(orderController.getOrder)
+)
 export default router;
