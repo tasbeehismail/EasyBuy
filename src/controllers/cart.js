@@ -56,11 +56,7 @@ export const addToCart = async (req, res, next) => {
 
 export const getCart = async (req, res, next) => {
     const userId = req.user._id;
-    // Find the cart for the current user and populate its items with skip Populate Reviews
-
-    const cart = await Cart.findOne({ user: userId }).populate('items.product')
-    
-
+    const cart = await Cart.findOne({ user: userId }).populate('items.product', 'name price images');
     if (!cart) {
         return next(new AppError('Cart not found', 404));
     }
@@ -155,6 +151,10 @@ export const applyCoupon = async (req, res, next) => {
         discount: coupon.discount,
         totalPriceAfterDiscount
     };
+
+    // Update the cart with the new total price
+    cart.total = totalPriceAfterDiscount;
+    await cart.save();
 
     return res.status(200).json({ message: 'Coupon applied successfully', data: result });
 }
