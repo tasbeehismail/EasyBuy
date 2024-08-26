@@ -8,7 +8,7 @@ import connectDB from './config/db.js';
 import errorHandler from './middleware/errorHandler.js';
 import routes from './routes/index.routes.js'; 
 import cors from 'cors';
-import asyncHandler from '../utils/asyncHandler.js';
+import asyncHandler from './utils/asyncHandler.js';
 import Stripe from 'stripe';
 
 dotenv.config();
