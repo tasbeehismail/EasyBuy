@@ -9,7 +9,7 @@ export const createCheckoutSession = async (req, res, next) => {
     const { cartId } = req.params;
     const { shippingAddress } = req.body;
 
-    let userCart = await Cart.findById(cartId);
+    let userCart = await Cart.findById({ _id: cartId });
     if (!userCart) {
         return next(new AppError('Cart not found', 404));
     }
