@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import errorHandler from './middleware/errorHandler.js';
 import routes from './routes/index.routes.js'; 
-
+import cors from 'cors';
 
 dotenv.config();
 
@@ -18,6 +18,8 @@ dotenv.config();
  * @return {Promise<void>} - A promise that resolves when the configuration is complete.
  */
 const bootstrap = async (app) => {
+    app.use(cors());
+    
     // Parse JSON bodies in request.
     app.use(express.json());
     
