@@ -4,6 +4,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 import Order from '../models/order.js';
 import AppError from '../utils/appError.js';
 import Cart from '../models/cart.js';
+import Product from '../models/product.js';
 
 /**
  * Sets up the Stripe webhook endpoint.
