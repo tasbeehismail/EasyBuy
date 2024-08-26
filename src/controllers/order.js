@@ -26,8 +26,8 @@ export const createCheckoutSession = async (req, res, next) => {
             quantity: 1
         }],
         mode: 'payment',
-        success_url: 'http://localhost:3000/v1/api/orders/',
-        cancel_url: 'http://localhost:3000/v1/api/carts/',
+        success_url: `${process.env.BASE_URL}/v1/api/orders/`,
+        cancel_url: `${process.env.BASE_URL}/v1/api/carts/`,
         customer_email: req.user.email,
         client_reference_id: cartId,
         metadata: shippingAddress
