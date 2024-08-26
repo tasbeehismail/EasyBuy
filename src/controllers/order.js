@@ -18,7 +18,7 @@ export const createCheckoutSession = async (req, res, next) => {
         line_items: [{
             price_data: {
                 currency: 'egp',
-                unit_amount: userCart.total * 100,
+                unit_amount: Math.round(userCart.total * 100),
                 product_data: {
                     name: 'Cart Total Payment',
                 },
