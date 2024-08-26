@@ -8,11 +8,9 @@ import connectDB from './config/db.js';
 import errorHandler from './middleware/errorHandler.js';
 import routes from './routes/index.routes.js'; 
 import cors from 'cors';
-import asyncHandler from './utils/asyncHandler.js';
-import Stripe from 'stripe';
+import { setupWebhook } from './services/stripe.service.js';
 
 dotenv.config();
-
 
 /**
  * Bootstrap function to configure the express app.
@@ -21,25 +19,9 @@ dotenv.config();
  * @return {Promise<void>} - A promise that resolves when the configuration is complete.
  */
 const bootstrap = async (app) => {
-    
-    app.post('/v1/api/webhook', express.raw({ type: 'application/json' }), asyncHandler((req, res) => { 
-        const sig = req.headers['stripe-signature'].toString();
 
-        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-        let event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-
-        // Handle the event
-        let session;
-        if(event.type === 'checkout.session.completed') {
-            session = event.data.object;
-        }
-
-        // Return a 200 response to acknowledge receipt of the event
-        res.json({ message: 'Success', data: session });
-    }));
-
-
+    // Set up Stripe webhook.
+    setupWebhook(app);
 
     app.use(cors());
 
